@@ -1,0 +1,4 @@
+include docs/man/*.gz
+include Makefile
+include metadata/*
+include README.rst

@@ -1,0 +1,504 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pyprojsetup.__main__ &mdash; pyprojsetup 0.2 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="pyprojsetup 0.2 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pyprojsetup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">General Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Synopsis.html">Synopsis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Description.html">Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Customization.html">Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Credentials.html">Credentials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Makefile.html">Makefile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Options.html">Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Exit_Codes.html">Exit Codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Example.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Bugs.html">Bugs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Online Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../API.html">API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">pyprojsetup</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>pyprojsetup.__main__</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pyprojsetup.__main__</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Main module of pyprojsetup. Provides command-line entry point and main logic.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">stat</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sphinx_rtd_theme</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span>
+        <span class="s2">&quot;WARNING: sphinx_rtd_theme is not installed. &quot;</span>
+        <span class="s2">&quot;You will not be able to build HTML with that theme.&quot;</span><span class="p">,</span>
+        <span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
+        <span class="p">)</span>
+
+<span class="n">MYDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="chmod_plus_x"><a class="viewcode-back" href="../../apidocs/pyprojsetup.html#pyprojsetup.__main__.chmod_plus_x">[docs]</a><span class="k">def</span> <span class="nf">chmod_plus_x</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+    <span class="c1"># Get file&#39;s current permissions</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+    <span class="c1"># Use binary OR to add the new permissions</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">st</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXUSR</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXGRP</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IXOTH</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="copy"><a class="viewcode-back" href="../../apidocs/pyprojsetup.html#pyprojsetup.__main__.copy">[docs]</a><span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="sd">&quot;&quot;&quot;Copy files from data/ to the project and insert</span>
+<span class="sd">    project-specific data.&quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">MYDIR</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">src</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">as</span> <span class="n">f1</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">f1</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f2</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">fmt</span><span class="p">),</span> <span class="nb">file</span><span class="o">=</span><span class="n">f2</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="overwrite_sphinx_conf"><a class="viewcode-back" href="../../apidocs/pyprojsetup.html#pyprojsetup.__main__.overwrite_sphinx_conf">[docs]</a><span class="k">def</span> <span class="nf">overwrite_sphinx_conf</span><span class="p">(</span><span class="n">confdir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sphinx-quickstart does not take input for the Man page title,</span>
+<span class="sd">    and instead assumes &#39;&lt;your project&gt; Documentation&#39;</span>
+<span class="sd">    To fix that, we have to rewrite the file. Also, set the default</span>
+<span class="sd">    html theme to sphinx_rtd_theme. Also also, we have to tell</span>
+<span class="sd">    sphinx autodoc where to find the project.&quot;&quot;&quot;</span>
+    <span class="n">tempfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">confdir</span><span class="p">,</span> <span class="s1">&#39;setup_sphinx.tmp&#39;</span><span class="p">)</span>
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">confdir</span><span class="p">,</span> <span class="s1">&#39;conf.py&#39;</span><span class="p">)</span>
+    <span class="n">section</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">import_done</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tempfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">import_done</span><span class="p">)</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;import&#39;</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">line</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;import sphinx_rtd_theme</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="s2">&quot;sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(&#39;.&#39;))))&quot;</span>
+                        <span class="p">)</span>
+                    <span class="n">import_done</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;html_theme =&#39;</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;html_theme = </span><span class="se">\&quot;</span><span class="s2">sphinx_rtd_theme</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#html_theme_path&#39;</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="s2">&quot;html_theme_path = &quot;</span>
+                        <span class="s2">&quot;[sphinx_rtd_theme.get_html_theme_path()]&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;man_pages&#39;</span><span class="p">):</span>
+                    <span class="n">section</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">if</span> <span class="n">section</span><span class="p">:</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="s1">&#39;Documentation&#39;</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
+                            <span class="n">args</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&#39;&#39;&quot;</span>
+                            <span class="n">section</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+                <span class="n">t</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tempfile</span><span class="p">,</span> <span class="n">conf</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="git_init"><a class="viewcode-back" href="../../apidocs/pyprojsetup.html#pyprojsetup.__main__.git_init">[docs]</a><span class="k">def</span> <span class="nf">git_init</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">project_name</span><span class="p">,</span> <span class="n">short_description</span><span class="p">,</span> <span class="n">gh_token</span><span class="p">,</span>
+             <span class="n">git_repo_creation_url</span><span class="p">,</span> <span class="n">gh_pages_dir</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">author_email</span><span class="p">):</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;git init&#39;</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+        <span class="s1">&#39;git config user.name {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">author</span><span class="p">),</span> <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+        <span class="s1">&#39;git config user.email &quot;{}&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">author_email</span><span class="p">),</span> <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span>
+        <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;git add --all&#39;</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+        <span class="s1">&#39;git commit --all -m &quot;initial commit&quot;&#39;</span><span class="p">,</span>
+        <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">project_name</span><span class="p">,</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">short_description</span>
+        <span class="p">})</span>
+    <span class="n">auth_header</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s2">&quot;token {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gh_token</span><span class="p">)}</span>
+    <span class="n">req</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">git_repo_creation_url</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">auth_header</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+        <span class="s1">&#39;git remote add origin {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="s1">&#39;ssh_url&#39;</span><span class="p">]),</span> <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;git push origin master&#39;</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+        <span class="s2">&quot;git subtree push --prefix {} origin gh-pages&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gh_pages_dir</span><span class="p">),</span>
+        <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../apidocs/pyprojsetup.html#pyprojsetup.__main__.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;CLI entry point&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">parsers</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">parsers</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">project_name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">author</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">author</span>
+    <span class="n">author_email</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">email</span>
+    <span class="n">short_description</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">description</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">startingversion</span>
+    <span class="k">if</span> <span class="s1">&#39;Legacy&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">parse_version</span><span class="p">(</span><span class="n">version</span><span class="p">))):</span>
+        <span class="k">print</span><span class="p">(</span>
+            <span class="s2">&quot;{} is not a PEP 440 compliant version number.&quot;</span>
+            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">),</span> <span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span>
+            <span class="s2">&quot;{} is not a directory.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;For &#39;path&#39;, please provide the directory where the project root &quot;</span>
+            <span class="s2">&quot;should be created.</span><span class="se">\n</span><span class="s2">$HOME/projects would create &quot;</span>
+            <span class="s2">&quot;$new_project at $HOME/projects/$new_project&quot;</span>
+            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">),</span>
+            <span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">project_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">root</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span>
+            <span class="s2">&quot;{} already exists; aborting.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">github_data</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">githubconfig</span> <span class="k">if</span> <span class="n">g</span><span class="p">[</span><span class="s1">&#39;hostname&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">args</span><span class="o">.</span><span class="n">github</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+    <span class="n">git_org</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">organization</span>
+    <span class="n">git_url</span> <span class="o">=</span> <span class="n">github_data</span><span class="p">[</span><span class="s1">&#39;project_url&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">user</span><span class="o">=</span><span class="n">git_org</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">project_name</span><span class="p">)</span>
+    <span class="n">git_host</span> <span class="o">=</span> <span class="n">github_data</span><span class="p">[</span><span class="s1">&#39;hostname&#39;</span><span class="p">]</span>
+    <span class="n">git_repo_creation_url</span> <span class="o">=</span> <span class="n">github_data</span><span class="p">[</span><span class="s1">&#39;repo_creation_url&#39;</span><span class="p">]</span>
+    <span class="n">api_release_url</span> <span class="o">=</span> <span class="n">github_data</span><span class="p">[</span><span class="s1">&#39;api_release_url&#39;</span><span class="p">]</span>
+    <span class="n">gh_pages_url</span> <span class="o">=</span> <span class="n">github_data</span><span class="p">[</span><span class="s1">&#39;gh_pages_url&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">user</span><span class="o">=</span><span class="n">git_org</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">project_name</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span>
+        <span class="s2">&quot;Requesting token for {} at {} from keychain.&quot;</span>
+        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">git_org</span><span class="p">,</span> <span class="n">git_host</span><span class="p">),</span>
+        <span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">gh_token</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+            <span class="s2">&quot;security find-generic-password -a {} -s {} -w&quot;</span>
+            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">git_org</span><span class="p">,</span> <span class="n">git_host</span><span class="p">),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span>
+            <span class="s2">&quot;Failed to retrieve password. This setup script and the associated&quot;</span>
+            <span class="s2">&quot; build system use the OS Keychain to access your github token. &quot;</span>
+            <span class="s2">&quot;Please add your personal access token to your keychain like this:&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">security add-generic-password -a {} -s {} -l [label] &quot;</span>
+            <span class="s2">&quot;-w [token]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">git_org</span><span class="p">,</span> <span class="n">git_host</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Create Directory Structure</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">doc_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;docs&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">doc_dir</span><span class="p">)</span>
+    <span class="n">doc_src_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc_dir</span><span class="p">,</span> <span class="s1">&#39;src&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">doc_src_dir</span><span class="p">)</span>
+    <span class="n">doc_man_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc_dir</span><span class="p">,</span> <span class="s1">&#39;man&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">doc_man_dir</span><span class="p">)</span>
+    <span class="n">apidoc_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc_dir</span><span class="p">,</span> <span class="s1">&#39;apidocs&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">apidoc_dir</span><span class="p">)</span>
+    <span class="n">doctest_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc_dir</span><span class="p">,</span> <span class="s1">&#39;doctests&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">doctest_dir</span><span class="p">)</span>
+    <span class="n">gh_pages_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc_dir</span><span class="p">,</span> <span class="s1">&#39;gh-pages&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">gh_pages_dir</span><span class="p">)</span>
+    <span class="n">metadata_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;metadata&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">metadata_dir</span><span class="p">)</span>
+    <span class="n">project_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">project_name</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+
+    <span class="c1"># Create VirtualEnv</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;virtualenv .&#39;</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="c1"># Write Project Python Files</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;project.init.py&#39;</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">,</span> <span class="s1">&#39;__init__.py&#39;</span><span class="p">,</span>
+         <span class="n">fmt</span><span class="o">=</span><span class="p">[</span><span class="n">short_description</span><span class="p">,</span> <span class="n">version</span><span class="p">])</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;project.main.py&#39;</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">,</span> <span class="s1">&#39;__main__.py&#39;</span><span class="p">,</span>
+         <span class="n">fmt</span><span class="o">=</span><span class="p">[</span><span class="n">project_name</span><span class="p">])</span>
+    <span class="n">chmod_plus_x</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">project_dir</span><span class="p">,</span> <span class="s1">&#39;__main__.py&#39;</span><span class="p">))</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;project.parsers.py&#39;</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">,</span> <span class="s1">&#39;parsers.py&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Write Documentation</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;API.rst&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;API.rst&#39;</span><span class="p">,</span>
+         <span class="n">fmt</span><span class="o">=</span><span class="p">[</span><span class="n">git_url</span><span class="p">])</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;Bugs.rst&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;Bugs.rst&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;Contributing.rst&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;Contributing.rst&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;Description.rst&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;Description.rst&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;Example.rst&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;Example.rst&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;Exit_Codes.rst&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;Exit_Codes.rst&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;help_output&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;help_output&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;Installation.rst&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;Installation.rst&#39;</span><span class="p">,</span>
+         <span class="n">fmt</span><span class="o">=</span><span class="p">[</span><span class="n">project_name</span><span class="p">,</span> <span class="n">git_url</span><span class="p">])</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;Options.rst&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;Options.rst&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;Synopsis.rst&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;Synopsis.rst&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;README.rst&#39;</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="s1">&#39;README.rst&#39;</span><span class="p">,</span>
+         <span class="n">fmt</span><span class="o">=</span><span class="p">[</span><span class="n">project_name</span><span class="p">,</span> <span class="n">gh_pages_url</span><span class="p">])</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+        <span class="s2">&quot;sphinx-quickstart -q -p &#39;{0}&#39; -a &#39;{1}&#39; -v &#39;{2}&#39; &quot;</span>
+        <span class="s2">&quot;--ext-autodoc --ext-doctest --ext-viewcode &quot;</span>
+        <span class="s2">&quot;--no-batchfile --no-makefile {3}&quot;</span>
+        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">project_name</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">),</span>
+        <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span>
+        <span class="p">)</span>
+    <span class="n">overwrite_sphinx_conf</span><span class="p">(</span><span class="n">doc_src_dir</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;index.rst&#39;</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">,</span> <span class="s1">&#39;index.rst&#39;</span><span class="p">,</span>
+         <span class="n">fmt</span><span class="o">=</span><span class="p">[</span><span class="n">project_name</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()])</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;nojekyll&#39;</span><span class="p">,</span> <span class="n">gh_pages_dir</span><span class="p">,</span> <span class="s1">&#39;.nojekyll&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Write Miscellaneous Files</span>
+    <span class="n">project_name_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;project_name&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">project_name_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">project_name</span><span class="p">)</span>
+    <span class="n">version_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">version_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+    <span class="n">desc_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;short_description&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">desc_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">short_description</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span>
+        <span class="s1">&#39;setup.py&#39;</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="s1">&#39;setup.py&#39;</span><span class="p">,</span>
+        <span class="n">fmt</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">author</span><span class="p">,</span> <span class="n">author_email</span><span class="p">,</span>
+            <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">project_name</span><span class="p">,</span> <span class="s2">&quot;{}&quot;</span><span class="p">,</span> <span class="n">git_url</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;MANIFEST.in&#39;</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="s1">&#39;MANIFEST.in&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;sublime-project&#39;</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="s2">&quot;{}.sublime-project&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">project_name</span><span class="p">))</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;env&#39;</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="s1">&#39;.env&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;Makefile&#39;</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="s1">&#39;Makefile&#39;</span><span class="p">,</span>
+         <span class="n">fmt</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">project_name</span><span class="p">,</span> <span class="s2">&quot;$(proj)&quot;</span><span class="p">,</span> <span class="n">api_release_url</span><span class="p">)</span>
+            <span class="p">])</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;gitignore&#39;</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="s1">&#39;.gitignore&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;editorconfig&#39;</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="s1">&#39;.editorconfig&#39;</span><span class="p">)</span>
+    <span class="n">copy</span><span class="p">(</span><span class="s1">&#39;LICENSE.txt&#39;</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="s1">&#39;LICENSE.txt&#39;</span><span class="p">,</span>
+         <span class="n">fmt</span><span class="o">=</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">author</span><span class="p">])</span>
+
+    <span class="c1"># Install User-requested packages</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">packages</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+            <span class="s1">&#39;./bin/pip install {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">packages</span><span class="p">)),</span>
+            <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="c1"># Create docs</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;SKIPEDIT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;AUTOYES&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;make docs&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">root</span><span class="p">)</span>
+
+    <span class="c1"># Setup Git</span>
+    <span class="n">git_init</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">project_name</span><span class="p">,</span> <span class="n">short_description</span><span class="p">,</span> <span class="n">gh_token</span><span class="p">,</span>
+             <span class="n">git_repo_creation_url</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">gh_pages_dir</span><span class="p">,</span> <span class="n">root</span><span class="p">),</span>
+             <span class="n">author</span><span class="p">,</span> <span class="n">author_email</span><span class="p">)</span>
+
+    <span class="c1"># Welcome to your project</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;open {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">git_url</span><span class="p">),</span> <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Welcome to the new {} repository!</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">project_name</span><span class="p">))</span>
+    <span class="k">print</span><span class="p">(</span>
+        <span class="s2">&quot;Support is included for a man.1 page. &quot;</span>
+        <span class="s2">&quot;To add other man pages, create the RST documentation and &quot;</span>
+        <span class="s2">&quot;update the following:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;{0}/Makefile &#39;docs&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;{1}/conf.py &#39;man_pages&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;{0}/setup.py &#39;DATA_FILES&#39;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">doc_src_dir</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span>
+        <span class="s2">&quot;To get started, cd {0}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;subl {0}.sublime-project&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">project_name</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Micah Culpepper.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

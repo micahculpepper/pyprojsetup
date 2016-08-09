@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Makefile &mdash; pyprojsetup 0.2 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="pyprojsetup 0.2 documentation" href="index.html"/>
+        <link rel="next" title="Options" href="Options.html"/>
+        <link rel="prev" title="Credentials" href="Credentials.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pyprojsetup
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">General Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Synopsis.html">Synopsis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Description.html">Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Customization.html">Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Credentials.html">Credentials</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Makefile</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#targets">Targets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#make-clean">make clean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-install">make install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-test">make test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-newversion">make newversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-egginfo">make egginfo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-lint">make lint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-coverage">make coverage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-requirements">make requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-docs">make docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-commit">make commit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-sdist">make sdist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-release">make release</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-dryrun">make dryrun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#make-all">make all</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#environment">Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Options.html">Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Exit_Codes.html">Exit Codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Bugs.html">Bugs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Online Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">pyprojsetup</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Makefile</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/Makefile.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="makefile">
+<h1>Makefile<a class="headerlink" href="#makefile" title="Permalink to this headline">¶</a></h1>
+<p>Projects created by pyprojsetup will include a Makefile in their root directory. This Makefile exists to automate common development workflows.</p>
+<div class="section" id="targets">
+<h2>Targets<a class="headerlink" href="#targets" title="Permalink to this headline">¶</a></h2>
+<p>A make target, supplied as a command-line argument following the <code class="code docutils literal"><span class="pre">make</span></code> command, describes an objective that <code class="code docutils literal"><span class="pre">make</span></code> should work towards. For more information on make, see the <a class="reference external" href="https://www.gnu.org/software/make/manual/make.html">official docs</a>. The following targets are defined in the Makefile that pyprojsetup creates:</p>
+<div class="section" id="make-clean">
+<h3>make clean<a class="headerlink" href="#make-clean" title="Permalink to this headline">¶</a></h3>
+<p>Delete temporary files in the repo.</p>
+</div>
+<div class="section" id="make-install">
+<h3>make install<a class="headerlink" href="#make-install" title="Permalink to this headline">¶</a></h3>
+<p>Install the project on your system using pip. Meant as a convenience function for end-users who are comfortable with installing things via <code class="code docutils literal"><span class="pre">make</span></code>.</p>
+</div>
+<div class="section" id="make-test">
+<h3>make test<a class="headerlink" href="#make-test" title="Permalink to this headline">¶</a></h3>
+<p>Run the test suite and <a class="reference external" href="https://tox.readthedocs.io/en/latest/">tox</a>.</p>
+</div>
+<div class="section" id="make-newversion">
+<h3>make newversion<a class="headerlink" href="#make-newversion" title="Permalink to this headline">¶</a></h3>
+<p>Prompt for a new version number, check it for PEP 440 compliance, then write the new version to <code class="code docutils literal"><span class="pre">metadata/version</span></code> and <code class="code docutils literal"><span class="pre">__init__.py</span></code></p>
+</div>
+<div class="section" id="make-egginfo">
+<h3>make egginfo<a class="headerlink" href="#make-egginfo" title="Permalink to this headline">¶</a></h3>
+<p>Populate <code class="code docutils literal"><span class="pre">&lt;project_name&gt;.egg-info/</span></code> by running <code class="code docutils literal"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">egginfo</span></code>, which creates some useful metadata.</p>
+</div>
+<div class="section" id="make-lint">
+<h3>make lint<a class="headerlink" href="#make-lint" title="Permalink to this headline">¶</a></h3>
+<p>Run <code class="code docutils literal"><span class="pre">make</span> <span class="pre">egginfo</span></code>, then lint the project. Default linter is pylint. The linted files are the .py files included in <code class="code docutils literal"><span class="pre">setup.py</span></code>&#8216;s <code class="code docutils literal"><span class="pre">packages</span></code>.</p>
+</div>
+<div class="section" id="make-coverage">
+<h3>make coverage<a class="headerlink" href="#make-coverage" title="Permalink to this headline">¶</a></h3>
+<p>Evaluate the percentage of code that is covered by a test case. Set a value for <code class="code docutils literal"><span class="pre">coverage_min</span></code> in <code class="code docutils literal"><span class="pre">Makefile</span></code> to enforce a minimum coverage percentage requirement.</p>
+</div>
+<div class="section" id="make-requirements">
+<h3>make requirements<a class="headerlink" href="#make-requirements" title="Permalink to this headline">¶</a></h3>
+<p>Run <code class="code docutils literal"><span class="pre">make</span> <span class="pre">egginfo</span></code>, then compare the dependencies declared by the project with those mentioned in imports, those used by the project, and those installed in the virtual environment. This tool helps you keep your <code class="code docutils literal"><span class="pre">setup.py</span></code>&#8216;s <code class="code docutils literal"><span class="pre">install_requires</span></code> up-to-date.</p>
+</div>
+<div class="section" id="make-docs">
+<h3>make docs<a class="headerlink" href="#make-docs" title="Permalink to this headline">¶</a></h3>
+<p>Run <code class="code docutils literal"><span class="pre">make</span> <span class="pre">requirements</span></code>, then dynamically build updated documentation using a combination of the documents under <code class="code docutils literal"><span class="pre">docs/src</span></code>, CLI help output, docstrings, and actual code. Open the sources for review prior to building. Build a man page and an HTML page.</p>
+</div>
+<div class="section" id="make-commit">
+<h3>make commit<a class="headerlink" href="#make-commit" title="Permalink to this headline">¶</a></h3>
+<p>Git tag the current version number. Add, commit, and push all files to the new tag. Push <code class="code docutils literal"><span class="pre">docs/gh-pages</span></code> to the <code class="code docutils literal"><span class="pre">gh-pages</span></code> branch of the remote repo, which publishes the HTML documentation made by <code class="code docutils literal"><span class="pre">make</span> <span class="pre">docs</span></code> as a <a class="reference external" href="https://pages.github.com/">GitHub Page</a>.</p>
+</div>
+<div class="section" id="make-sdist">
+<h3>make sdist<a class="headerlink" href="#make-sdist" title="Permalink to this headline">¶</a></h3>
+<p>Creates a source distribution by running <code class="code docutils literal"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">sdist</span></code>.</p>
+</div>
+<div class="section" id="make-release">
+<h3>make release<a class="headerlink" href="#make-release" title="Permalink to this headline">¶</a></h3>
+<p>Run <code class="code docutils literal"><span class="pre">make</span> <span class="pre">sdist</span></code>, then create a new <a class="reference external" href="https://help.github.com/articles/about-releases/">release</a> in draft status on github via an API call, and upload the sdist tarball to the release page. The API call uses your <a class="reference internal" href="Credentials.html"><span class="doc">Credentials</span></a>.</p>
+</div>
+<div class="section" id="make-dryrun">
+<h3>make dryrun<a class="headerlink" href="#make-dryrun" title="Permalink to this headline">¶</a></h3>
+<p>Run <code class="code docutils literal"><span class="pre">make</span> <span class="pre">test</span> <span class="pre">coverage</span> <span class="pre">lint</span> <span class="pre">docs</span> <span class="pre">sdist</span></code>.</p>
+</div>
+<div class="section" id="make-all">
+<h3>make all<a class="headerlink" href="#make-all" title="Permalink to this headline">¶</a></h3>
+<p>Run <code class="code docutils literal"><span class="pre">make</span> <span class="pre">newversion</span> <span class="pre">dryrun</span> <span class="pre">commit</span> <span class="pre">release</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="code docutils literal"><span class="pre">make</span></code> with no other arguments will run <code class="code docutils literal"><span class="pre">make</span> <span class="pre">all</span></code>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="environment">
+<h2>Environment<a class="headerlink" href="#environment" title="Permalink to this headline">¶</a></h2>
+<p>To modify the behavior of the Makefile, export environment variables before running make.</p>
+<ul class="simple">
+<li>To see curl output when uploading to github, <code class="code docutils literal"><span class="pre">export</span> <span class="pre">VERBOSE=1</span></code></li>
+<li>To avoid opening files in the editor, <code class="code docutils literal"><span class="pre">export</span> <span class="pre">SKIPEDIT=1</span></code></li>
+<li>To avoid pausing for user input, <code class="code docutils literal"><span class="pre">export</span> <span class="pre">AUTOYES=1</span></code></li>
+</ul>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">If you are not sure if your code is ready to release, run <code class="code docutils literal"><span class="pre">make</span> <span class="pre">dryrun</span></code> to <em>check all the things</em>.
+If you are ready to mark a new version and publish a release, <code class="code docutils literal"><span class="pre">make</span></code>.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Options.html" class="btn btn-neutral float-right" title="Options" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Credentials.html" class="btn btn-neutral" title="Credentials" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Micah Culpepper.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

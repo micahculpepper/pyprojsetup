@@ -1,0 +1,34 @@
+usage: pyprojsetup [-h] [--version] [--author AUTHOR] [--email EMAIL]
+                   [--startingversion STARTINGVERSION] [--github {github.com}]
+                   [--description DESCRIPTION] [--organization ORGANIZATION]
+                   [--packages PACKAGES [PACKAGES ...]]
+                   name [path]
+
+Streamlined python project setup and build system.
+
+positional arguments:
+  name                  project name
+  path                  location where the project root directory will be
+                        created (default: current directory)
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show the version number and exit
+  --author AUTHOR       author name(s) for package metadata (default: system
+                        username)
+  --email EMAIL         author e-mail address for package metadata (default:
+                        author@example.com)
+  --startingversion STARTINGVERSION
+                        starting version number (default: 0.1)
+  --github {github.com}
+                        specify the github that will host this project
+                        (default: github.com)
+  --description DESCRIPTION
+                        Short, one-line description of the project (default:
+                        Bar foo-er for humans)
+  --organization ORGANIZATION
+                        The github organization or user that will own the
+                        project (default: system username)
+  --packages PACKAGES [PACKAGES ...]
+                        extra packages to pip install in the new virtual
+                        environment

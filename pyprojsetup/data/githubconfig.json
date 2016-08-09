@@ -1,0 +1,9 @@
+[
+    {
+        "hostname": "github.com",
+        "project_url": "https://github.com/{user}/{name}",
+        "repo_creation_url": "https://api.github.com/user/repos",
+        "gh_pages_url": "http://{user}.github.io/{name}",
+        "api_release_url": "https://api.github.com/user/repos/{user}/{name}/releases"
+    }
+]

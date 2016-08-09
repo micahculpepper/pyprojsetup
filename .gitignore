@@ -1,0 +1,35 @@
+# sublime-workspace contains history
+# sublime-project files are safe
+*.sublime-workspace
+
+# Compiled python modules.
+*.pyc
+
+# Setuptools distribution folder.
+/dist/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+/*.egg
+
+# VirtualEnvironment Files
+/bin/
+/include/
+/lib/
+pip-selfcheck.json
+.Python
+
+# Sphinx Temporary Folders
+.doctrees/
+
+# Doctest results
+/docs/doctests/
+
+# Test coverage results
+.coverage
+
+# Tox test reults
+/.tox/
+
+# Folder created by test
+/pyprojsetup_test_repo/

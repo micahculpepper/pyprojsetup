@@ -1,0 +1,14 @@
+{
+    "folders":
+    [
+        {
+            "path": ".",
+            "folder_exclude_patterns": [
+                "bin", "lib", "include", "*.egg-info", "dist", ".tox"
+            ],
+            "file_exclude_patterns": [
+                ".coverage", ".Python", "pip-selfcheck.json", ".eggs"
+            ]
+        }
+    ]
+}

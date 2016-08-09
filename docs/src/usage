@@ -1,0 +1,5 @@
+pyprojsetup [-h] [--version] [--author AUTHOR] [--email EMAIL]
+                   [--startingversion STARTINGVERSION] [--github {github.com}]
+                   [--description DESCRIPTION] [--organization ORGANIZATION]
+                   [--packages PACKAGES [PACKAGES ...]]
+                   name [path]
