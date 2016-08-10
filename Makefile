@@ -8,7 +8,7 @@ sources = $(shell grep ".*\.py$$" $(sources_file))
 gituser = $(shell git remote get-url --push origin | cut -d ':' -f 2 | cut -d '/' -f 1)
 githostname = $(shell git remote get-url --push origin | grep -o -e 'github.*\.com')
 githubtoken = $(shell security find-generic-password -a $(gituser) -s $(githostname) -w)
-api_release_url = "https://api.github.com/user/repos/$(gituser)/$(proj)/releases"
+api_release_url = "https://api.github.com/repos/micahculpepper/$(proj)/releases"
 linter = pylint
 sdistdir = dist
 # Minimum required test coverage percentage
