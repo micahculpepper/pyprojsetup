@@ -44,7 +44,7 @@ def _add_arguments(subparser):
     subparser.add_argument(
         "--version", action="version",
         help="show the version number and exit",
-        version="asa_config {}".format(__version__)
+        version="{} {}".format(PROG, __version__)
     )
     subparser.add_argument(
         '--author',
