@@ -194,6 +194,8 @@ def main(args=None):
     os.mkdir(metadata_dir)
     project_dir = os.path.join(root, project_name)
     os.mkdir(project_dir)
+    tests_dir = os.path.join(project_dir, "tests")
+    os.mkdir(tests_dir)
 
     # Create VirtualEnv
     subprocess.call('virtualenv .', cwd=root, shell=True)
@@ -205,6 +207,10 @@ def main(args=None):
          fmt=[project_name])
     chmod_plus_x(os.path.join(project_dir, '__main__.py'))
     copy('project.parsers.py', project_dir, 'parsers.py')
+
+    # Write Test Suite Files
+    copy('project.tests.init.py', tests_dir, '__init__.py')
+    copy('project.tests.tests.py', tests_dir, 'tests.py')
 
     # Write Documentation
     copy('API.rst', doc_src_dir, 'API.rst',
