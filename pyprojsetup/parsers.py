@@ -95,6 +95,10 @@ def _add_arguments(subparser):
         '--packages', nargs='+',
         help="extra packages to pip install in the new virtual environment"
         )
+    subparser.add_argument(
+        '--django', action="store_true",
+        help="set up django. Be sure to include django in --packages, too"
+        )
 
 
 def main():

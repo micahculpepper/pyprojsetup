@@ -274,6 +274,11 @@ def main(args=None):
             './bin/pip install {}'.format(' '.join(args.packages)),
             cwd=root, shell=True)
 
+    if args.django:
+        subprocess.call(
+            'django-admin startproject {}'.format(project_name),
+            cwd=os.path.dirname(root), shell=True)
+
     # Create docs
     os.environ['SKIPEDIT'] = '1'
     os.environ['AUTOYES'] = '1'
